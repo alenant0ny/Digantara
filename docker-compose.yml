@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: scheduler-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: schedulerdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  migrate:
+    image: migrate/migrate
+    depends_on:
+      - postgres
+    volumes:
+      - ./migrations:/migrations
+      - ./wait-for.sh:/wait-for.sh
+    entrypoint: ["/wait-for.sh", "postgres", "5432", "migrate", "-path", "/migrations", "-database", "postgres://postgres:postgrespassword@postgres:5432/schedulerdb?sslmode=disable", "up"]
+
+  app:
+    build: .
+    container_name: my-go-app
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgrespassword
+      DB_NAME: schedulerdb
+    volumes:
+      - ./wait-for.sh:/wait-for.sh
+    entrypoint: ["/wait-for.sh", "postgres", "5432", "./myapp"]
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:

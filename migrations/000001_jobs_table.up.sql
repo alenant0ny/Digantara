@@ -1,0 +1,10 @@
+CREATE TABLE jobs (
+    id SERIAL PRIMARY KEY,
+    job_id BIGINT UNIQUE NOT NULL,
+    job_name VARCHAR(255) NOT NULL,
+    job_type VARCHAR(50) NOT NULL,
+    cron_expr VARCHAR(100) NOT NULL,
+    last_run TIMESTAMP NULL,
+    next_run TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
