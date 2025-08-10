@@ -1,7 +1,9 @@
 package scheduler
 
 import (
+	"digantara/internal/db"
 	"fmt"
+	"time"
 
 	"github.com/robfig/cron/v3"
 )
@@ -13,14 +15,33 @@ func StartScheduler() {
 	c.Start()
 }
 
-func AddJob(name, cronExpr string) (cron.EntryID, error) {
+func AddJob(name, cronExpr, message string) (cron.EntryID, error) {
 	job, err := GetJob(name)
 	if err != nil {
 		return 0, err
 	}
-	id, err := c.AddFunc(cronExpr, func() { job.Run() })
+	id, err := c.AddFunc(cronExpr, func() { job.Run(message) })
 	if err != nil {
 		return 0, err
+	}
+
+	newJob := db.Job{
+		JobID:     int(id),
+		JobName:   "EmailJob",
+		JobType:   "",
+		CronExpr:  "0 0 * * *",      // every day at midnight
+		LastRun:   time.Time{},      // zero value if not run yet
+		NextRun:   c.Entry(id).Next, // example next run
+		CreatedAt: time.Now(),
+		Message:   message,
+	}
+
+	// nextRun := c.Entry(id).Next
+
+	dbErr := db.CreateJob(&newJob)
+	if dbErr != nil {
+		fmt.Println(dbErr)
+		return 0, dbErr
 	}
 	jobIDs[name] = id
 	return jobIDs[name], nil

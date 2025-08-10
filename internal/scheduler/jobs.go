@@ -3,7 +3,7 @@ package scheduler
 import "fmt"
 
 type Job interface {
-	Run()
+	Run(message string)
 }
 
 var jobRegistry = map[string]func() Job{
@@ -22,10 +22,12 @@ type SMSJob struct{}
 
 type EmailJob struct{}
 
-func (s SMSJob) Run() {
-	fmt.Println("Running SMS...")
+func (s SMSJob) Run(message string) {
+	sms := "SMS - " + message
+	fmt.Println(sms)
 }
 
-func (e EmailJob) Run() {
-	fmt.Println("Running Email...")
+func (e EmailJob) Run(message string) {
+	email := "Email - " + message
+	fmt.Println(email)
 }
