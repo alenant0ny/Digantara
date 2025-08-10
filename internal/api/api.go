@@ -20,7 +20,7 @@ func SetupRouter() *gin.Engine {
 	{
 		jobs.GET("", allJobs)
 		jobs.POST("", createJob)
-		jobs.GET("/id", getJob)
+		jobs.GET("/id/:id", getJobByID)
 	}
 
 	// r.GET("/jobs", AllJobs)

@@ -36,8 +36,6 @@ func AddJob(name, cronExpr, message string) (cron.EntryID, error) {
 		Message:   message,
 	}
 
-	// nextRun := c.Entry(id).Next
-
 	dbErr := db.CreateJob(&newJob)
 	if dbErr != nil {
 		fmt.Println(dbErr)
@@ -46,13 +44,6 @@ func AddJob(name, cronExpr, message string) (cron.EntryID, error) {
 	jobIDs[name] = id
 	return jobIDs[name], nil
 }
-
-// func RemoveJob(name string) {
-// 	if id, exists := jobIDs[name]; exists {
-// 		c.Remove(id)
-// 		delete(jobIDs, name)
-// 	}
-// }
 
 func ListJobs() {
 	for name, id := range jobIDs {

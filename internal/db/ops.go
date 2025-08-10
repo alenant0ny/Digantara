@@ -1,6 +1,8 @@
 package db
 
 import (
+	"errors"
+
 	"gorm.io/gorm"
 )
 
@@ -11,4 +13,23 @@ type JobRepository struct {
 // CreateJob inserts a new job record into the DB
 func CreateJob(job *Job) error {
 	return DB.Create(job).Error
+}
+
+func GetAllJobs() ([]Job, error) {
+	var jobs []Job
+	result := DB.Find(&jobs)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return jobs, nil
+}
+
+func GetJobByID(id int) (Job, error) {
+	var job Job
+	result := DB.Where("job_id = ?", id).First(&job)
+	if result.Error != nil {
+		return job, errors.New("Job not found")
+	}
+
+	return job, nil
 }

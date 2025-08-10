@@ -1,15 +1,29 @@
 package api
 
 import (
+	"digantara/internal/db"
 	"digantara/internal/scheduler"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func allJobs(c *gin.Context) {
-	c.JSON(200, gin.H{"message": "All jobs"})
+	jobs, err := db.GetAllJobs()
+	if err != nil {
+		c.JSON(400, gin.H{
+			"message": "Error fetching jobs",
+			"error":   "error getting list of jobs",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"message": "All jobs",
+		"jobs":    jobs,
+	})
 }
 
 func createJob(c *gin.Context) {
@@ -23,6 +37,7 @@ func createJob(c *gin.Context) {
 	id, err := scheduler.AddJob(req.Type, req.Cron, req.Message)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(200, gin.H{
@@ -32,10 +47,29 @@ func createJob(c *gin.Context) {
 	})
 }
 
-func getJob(c *gin.Context) {
+func getJobByID(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "invalid job id",
+			"id":    id,
+		})
+		return
+	}
+
+	job, err := db.GetJobByID(id)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "job does not exist",
+			"id":    id,
+		})
+		return
+	}
+
 	c.JSON(200, gin.H{
 		"message": "Job Details",
-		"id":      "",
+		"job":     job,
 	})
 }
 

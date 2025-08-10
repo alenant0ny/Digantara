@@ -3,17 +3,10 @@ package main
 import (
 	api "digantara/internal/api"
 	"digantara/internal/scheduler"
-	"fmt"
 	"log"
 )
 
 func main() {
-
-	fmt.Println("hello world")
-	// _, dbErr := db.Connect()
-	// if dbErr != nil {
-	// 	log.Fatalf("Failed to connect to DB: %v", dbErr)
-	// }
 
 	scheduler.StartScheduler()
 
