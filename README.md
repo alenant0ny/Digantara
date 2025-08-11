@@ -32,7 +32,7 @@ This endpoint creates a record in the database for newly created jobs.
 {
    "cron": "*/10 * * * * *",   //every ten second
    "cron": "10 * * * * *",     //every ten minutes
-   "cron": "0 0 14 * * 1"        //every monday at 2pm
+   "cron": "0 0 14 * * 1"      //every monday at 2pm
 }
 ```
 ```
