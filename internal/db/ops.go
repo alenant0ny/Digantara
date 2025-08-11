@@ -2,6 +2,7 @@ package db
 
 import (
 	"errors"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -19,6 +20,7 @@ func GetAllJobs() ([]Job, error) {
 	var jobs []Job
 	result := DB.Find(&jobs)
 	if result.Error != nil {
+		fmt.Println(result.Error)
 		return nil, result.Error
 	}
 	return jobs, nil

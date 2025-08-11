@@ -9,6 +9,7 @@ import (
 func main() {
 
 	scheduler.StartScheduler()
+	scheduler.StartDbJobs()
 
 	router := api.SetupRouter()
 

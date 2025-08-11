@@ -3,6 +3,7 @@ package scheduler
 import (
 	"digantara/internal/db"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/robfig/cron/v3"
@@ -45,10 +46,24 @@ func AddJob(name, cronExpr, message, jobname string) (cron.EntryID, error) {
 	return jobIDs[name], nil
 }
 
-func JobDetails() {
-	fmt.Println("job details by id")
-}
-
 func StartDbJobs() {
+	jobs, err := db.GetAllJobs()
+	if err != nil {
+		log.Fatalf("Unable to run jobs from db")
+	}
+	for _, v := range jobs {
+		job, err := GetJob(v.JobType)
+		if err != nil {
+			log.Fatalf("Could not get jobs")
+		}
+		go func(job Job, v db.Job) {
+			_, err := c.AddFunc(v.CronExpr, func() { job.Run(v.Message) })
+			if err != nil {
+				log.Fatalf("Could not start job of id: %v", v.ID)
+			}
+		}(job, v)
+
+	}
+	fmt.Println(">>>>>>>>>>>>>>>", jobs)
 	fmt.Println("starting jobs from db after application restart")
 }
