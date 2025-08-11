@@ -23,7 +23,5 @@ func SetupRouter() *gin.Engine {
 		jobs.GET("/id/:id", getJobByID)
 	}
 
-	// r.GET("/jobs", AllJobs)
-
 	return r
 }

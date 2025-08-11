@@ -34,7 +34,7 @@ func createJob(c *gin.Context) {
 		return
 	}
 
-	id, err := scheduler.AddJob(req.Type, req.Cron, req.Message)
+	id, err := scheduler.AddJob(req.Type, req.Cron, req.Message, req.Name)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return

@@ -15,7 +15,7 @@ func StartScheduler() {
 	c.Start()
 }
 
-func AddJob(name, cronExpr, message string) (cron.EntryID, error) {
+func AddJob(name, cronExpr, message, jobname string) (cron.EntryID, error) {
 	job, err := GetJob(name)
 	if err != nil {
 		return 0, err
@@ -27,11 +27,11 @@ func AddJob(name, cronExpr, message string) (cron.EntryID, error) {
 
 	newJob := db.Job{
 		JobID:     int(id),
-		JobName:   "EmailJob",
-		JobType:   "",
-		CronExpr:  "0 0 * * *",      // every day at midnight
-		LastRun:   time.Time{},      // zero value if not run yet
-		NextRun:   c.Entry(id).Next, // example next run
+		JobName:   jobname,
+		JobType:   name,
+		CronExpr:  cronExpr,
+		LastRun:   c.Entry(id).Prev,
+		NextRun:   c.Entry(id).Next,
 		CreatedAt: time.Now(),
 		Message:   message,
 	}
@@ -43,13 +43,6 @@ func AddJob(name, cronExpr, message string) (cron.EntryID, error) {
 	}
 	jobIDs[name] = id
 	return jobIDs[name], nil
-}
-
-func ListJobs() {
-	for name, id := range jobIDs {
-		entry := c.Entry(id)
-		fmt.Printf("Job: %s → Next run: %v\n", name, entry.Next)
-	}
 }
 
 func JobDetails() {
