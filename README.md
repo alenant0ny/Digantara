@@ -30,9 +30,9 @@ As of now, the scheduler only accepts cron expressions from the input. This need
 This endpoint creates a record in the database for newly created jobs.
 ```json
 {
-   "cron": "*/10 * * * * *",   //every ten second
-   "cron": "10 * * * * *",     //every ten minutes
-   "cron": "0 0 14 * * 1"      //every monday at 2pm
+   "cron": "*/10 * * * * *",         //every ten second
+   "cron": "* */10 * * * *",         //every ten minutes
+   "cron": "0 10 14 * * 1"            //every monday at 2.10pm
 }
 ```
 ```
