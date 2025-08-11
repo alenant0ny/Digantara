@@ -10,17 +10,18 @@ Endpoints:
    List all jobs from DB
 
 2. POST /jobs
+
    JSON INPUT
       {
-       "cron": "*/10 * * * * *",          //required
-       "type": "sms",                     //required
-       "message": "cron task message",
-       "name": ""
+         "cron": "*/10 * * * * *",          //required
+         "type": "sms",                     //required
+         "message": "cron task message",
+         "name": ""
       }
    As of now the scheduler only accepts cron expression from the input. This needs to be updated to accept high  level information like "everyday", "monday", "2pm", etc and translate it to cron expression in the program logic.
    Creates a record in the DB for newly created jobs.
 
-3. GET /jobs/id/:id
+6. GET /jobs/id/:id
    List job by id. There are two ids. Job ID assigned by cron and Auto incremented primary key ID by db. Here the Primary Key ID is used instead of Job ID issued by cron. Job ID is saved in the DB.
 
 Startup:
