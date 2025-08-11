@@ -71,5 +71,6 @@ func StartDbJobs() {
 
 	}
 	wg.Wait()
+	//db update pending
 	log.Println("All jobs restarted")
 }
