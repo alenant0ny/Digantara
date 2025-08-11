@@ -8,7 +8,10 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	validator "github.com/go-playground/validator/v10"
 )
+
+var validate = validator.New()
 
 func allJobs(c *gin.Context) {
 	jobs, err := db.GetAllJobs()
@@ -30,6 +33,11 @@ func createJob(c *gin.Context) {
 	var req CreateJobRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := validate.Struct(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
