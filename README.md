@@ -28,6 +28,21 @@ List all jobs from the database.
 ```
 As of now, the scheduler only accepts cron expressions from the input. This needs to be updated to accept higher-level information like "everyday", "monday", "2pm", etc., and translate it into a cron expression in the program logic.
 This endpoint creates a record in the database for newly created jobs.
+```json
+{
+   "cron": "*/10 * * * * *",   //every ten second
+   "cron": "10 * * * * *",     //every ten minutes
+   "cron": "0 0 14 * * 1"        //every monday at 2pm
+```
+```
+*   *   *   *   *   *
+│   │   │   │   │   └─ day of week (0–6 or SUN–SAT)
+│   │   │   │   └──── month (1–12 or JAN–DEC)
+│   │   │   └──────── day of month (1–31)
+│   │   └──────────── hour (0–23)
+│   └──────────────── minute (0–59)
+└──────────────────── second (0–59)
+```
 
 ---
 
