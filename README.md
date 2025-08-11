@@ -31,7 +31,7 @@ This endpoint creates a record in the database for newly created jobs.
 
 ---
 
-### 1. **GET** `/jobs/id/:id`
+### 3. **GET** `/jobs/id/:id`
 Get details of a job by id from database
 
 ---
