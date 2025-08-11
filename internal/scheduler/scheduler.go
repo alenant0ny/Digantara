@@ -4,6 +4,7 @@ import (
 	"digantara/internal/db"
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/robfig/cron/v3"
@@ -46,17 +47,22 @@ func AddJob(name, cronExpr, message, jobname string) (cron.EntryID, error) {
 	return jobIDs[name], nil
 }
 
+var wg sync.WaitGroup
+
 func StartDbJobs() {
+	fmt.Println("starting jobs from db after application restart")
 	jobs, err := db.GetAllJobs()
 	if err != nil {
 		log.Fatalf("Unable to run jobs from db")
 	}
 	for _, v := range jobs {
+		wg.Add(1)
 		job, err := GetJob(v.JobType)
 		if err != nil {
 			log.Fatalf("Could not get jobs")
 		}
 		go func(job Job, v db.Job) {
+			defer wg.Done()
 			_, err := c.AddFunc(v.CronExpr, func() { job.Run(v.Message) })
 			if err != nil {
 				log.Fatalf("Could not start job of id: %v", v.ID)
@@ -64,6 +70,6 @@ func StartDbJobs() {
 		}(job, v)
 
 	}
-	fmt.Println(">>>>>>>>>>>>>>>", jobs)
-	fmt.Println("starting jobs from db after application restart")
+	wg.Wait()
+	log.Println("All jobs restarted")
 }
