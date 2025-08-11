@@ -26,3 +26,15 @@ List all jobs from the database.
    "name": ""
 }
 ```
+As of now, the scheduler only accepts cron expressions from the input. This needs to be updated to accept higher-level information like "everyday", "monday", "2pm", etc., and translate it into a cron expression in the program logic.
+This endpoint creates a record in the database for newly created jobs.
+
+---
+
+### 1. **GET** `/jobs/id/:id`
+Get details of a job by id from database
+
+---
+
+## Project Startup
+On startup, the app schedules all jobs available in the db, so that it acts like restarting jobs that were not run due to the application downtime. The db will be updated accordingly.
