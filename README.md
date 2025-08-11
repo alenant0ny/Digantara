@@ -54,3 +54,28 @@ Get details of a job by id from database
 
 ## Project Startup
 On startup, the app schedules all jobs available in the db, so that it acts like restarting jobs that were not run due to the application downtime. The db will be updated accordingly.
+
+## Adding New Job
+1. Create a struct for new job with Run method, so that it implements Job interface in internal/scheduler/jobs.go.
+2. In internal/scheduler/jobs.go, modify variable jobRegistry with new job key.
+```
+type SMSJob struct{}
+
+type EmailJob struct{}
+
+func (s SMSJob) Run(message string) {
+	sms := "SMS - " + message
+	fmt.Println(sms)
+}
+
+func (e EmailJob) Run(message string) {
+	email := "Email - " + message
+	fmt.Println(email)
+}
+```
+```
+var jobRegistry = map[string]func() Job{
+	"sms":   func() Job { return SMSJob{} },
+	"email": func() Job { return EmailJob{} },
+}
+```
