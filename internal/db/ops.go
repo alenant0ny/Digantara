@@ -3,6 +3,7 @@ package db
 import (
 	"errors"
 	"fmt"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -34,4 +35,17 @@ func GetJobByID(id int) (Job, error) {
 	}
 
 	return job, nil
+}
+
+func UpdateJobByID(job *Job) {
+
+	result := DB.Model(&Job{}).
+		Where("job_id = ?", job.ID).
+		Updates(Job{
+			LastRun: job.LastRun,
+			NextRun: job.NextRun,
+			JobID:   job.JobID,
+		})
+	log.Println(result)
+
 }

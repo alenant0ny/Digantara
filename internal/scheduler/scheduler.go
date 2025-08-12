@@ -61,12 +61,22 @@ func StartDbJobs() {
 		if err != nil {
 			log.Fatalf("Could not get jobs")
 		}
+
 		go func(job Job, v db.Job) {
 			defer wg.Done()
-			_, err := c.AddFunc(v.CronExpr, func() { job.Run(v.Message) })
+			id, err := c.AddFunc(v.CronExpr, func() { job.Run(v.Message) })
 			if err != nil {
 				log.Fatalf("Could not start job of id: %v", v.ID)
 			}
+
+			updateJob := db.Job{
+				ID:      v.ID,
+				JobID:   int(id),
+				LastRun: v.NextRun,
+				NextRun: c.Entry(id).Next,
+			}
+			log.Printf("updating db for restarted job %v- job id %v, name: %s", v.ID, int(id), updateJob.JobName)
+			go db.UpdateJobByID(&updateJob)
 		}(job, v)
 
 	}

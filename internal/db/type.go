@@ -6,7 +6,7 @@ import (
 
 type Job struct {
 	ID        uint   `gorm:"primaryKey;autoIncrement"`
-	JobID     int    `gorm:"unique;not null"` // your custom sequential job id
+	JobID     int    `gorm:"not null"` // your custom sequential job id
 	JobName   string `gorm:"not null"`
 	JobType   string
 	CronExpr  string `gorm:"not null"`
