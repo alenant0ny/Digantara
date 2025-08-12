@@ -21,7 +21,7 @@ List all jobs from the database.
 ```json
 {
    "cron": "*/10 * * * * *",          // required
-   "type": "sms",                     // required
+   "type": "sms",                     // required ('sms' or 'email')
    "message": "cron task message",
    "name": ""
 }
