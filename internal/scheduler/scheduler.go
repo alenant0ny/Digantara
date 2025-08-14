@@ -23,6 +23,7 @@ func AddJob(name, cronExpr, message, jobname string) (cron.EntryID, error) {
 		return 0, err
 	}
 	id, err := c.AddFunc(cronExpr, func() { job.Run(message) })
+	job.SetID(id)
 	if err != nil {
 		return 0, err
 	}
@@ -65,6 +66,7 @@ func StartDbJobs() {
 		go func(job Job, v db.Job) {
 			defer wg.Done()
 			id, err := c.AddFunc(v.CronExpr, func() { job.Run(v.Message) })
+			job.SetID(id)
 			if err != nil {
 				log.Fatalf("Could not start job of id: %v", v.ID)
 			}
